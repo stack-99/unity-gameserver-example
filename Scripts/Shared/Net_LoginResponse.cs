@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 namespace Assets.Scripts.Shared
 {
     [System.Serializable]
-    public class Net_MessageToIngame : NetMsg
+    public class Net_LoginResponse : NetMsg
     {
-        public Net_MessageToIngame()
+        public Net_LoginResponse()
         {
-            OP = (byte)NetOP.MessageIngame;
+            OP = (byte)NetOP.LoginResponse;
         }
 
-        public string Text { get; set; }
+        public bool Success { get; set; }
+
+        public string Message { get; set; }
     }
 }

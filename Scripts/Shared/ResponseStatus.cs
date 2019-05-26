@@ -11,10 +11,17 @@ namespace Assets.Scripts.Shared
         public NetOP OPCode { get; set; }
 
         public bool Success { get; set; }
+
+        public string Message { get; set; }
     }
 
     public class ErrorResponseStatus : ResponseStatus
     {
+        public ErrorResponseStatus()
+        {
+            Success = false;
+        }
+
         public Exception ExceptionOccurred { get; set; }
     }
 

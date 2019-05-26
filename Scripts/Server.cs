@@ -14,6 +14,7 @@ public class Server : MonoBehaviour
 {
     private Dictionary<string, ConnectionChannel> connectionChannels = new Dictionary<string, ConnectionChannel>();
     private Dictionary<int, ConnectionUser> ConnectionUsers = new Dictionary<int, ConnectionUser>();
+    private Dictionary<string, User> Users = new Dictionary<string, User>();
 
     private int HostId;
     private int WebHostId;
@@ -130,6 +131,10 @@ public class Server : MonoBehaviour
                 OnCreateAccount(connId, hostId, (Net_CreateAccount)msg);
                 break;
 
+            case NetOP.LoginAccount:
+                OnLoginAccount(connId, hostId, (Net_LoginAccount)msg);
+                break;
+
             case NetOP.ConnectToServer:
                 OnConnectToServer(connId, hostId, (Net_ConnectToServer)msg);
                 break;
@@ -146,22 +151,68 @@ public class Server : MonoBehaviour
     private void OnCreateAccount(int connId, int hostId, Net_CreateAccount msg)
     {
         Debug.Log("Create account message");
+        UserOperations uo = new UserOperations(Users);
+        var respStatus = new AccountOperations().RegistrationFieldsValid(msg.RegisterAccount);
+        // Check that user does not exist <-- imp
 
-        // Check that user does not exist
-        // Save him so
-        User newUser = new User()
+        if(uo.DoesUserExist(msg.RegisterAccount.Username))
         {
-            Username = msg.Username,
-            Email = msg.Email,
-            Password = msg.Password,
-            DateJoined = DateTime.Now,
-            IsBanned = false
-        };
+            SendClient(hostId, connId, new Net_RegistrationResponse() { Success = false, Message = "This username already exists!" });
+        }
+        else if (ConnectionUsers[connId].user != null)
+        {
+            // This shouldn't happen
+            SendClient(hostId, connId, new Net_RegistrationResponse() { Success = false, Message = "This shouldn't happen, connected user has an account. " + ConnectionUsers[connId].user.Username});
+        }
+        else
+        {
+            User newUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                Username = msg.RegisterAccount.Username,
+                Email = msg.RegisterAccount.Email,
+                Password = msg.RegisterAccount.Password,
+                DateJoined = DateTime.Now,
+                IsBanned = false
+            };
 
-        ConnectionUsers[connId].user = newUser;
+            ConnectionUsers[connId].user = newUser;
+            // added him in memory but Im simulating db well actually the memory o-o
+            Users.Add(newUser.Username, newUser);
+            // if successfull
+            SendClient(hostId, connId, new Net_RegistrationResponse() { Success = true, Message = "Successfully registered!" });
+        }
 
-        // if successfull
-        SendClient(hostId, connId, new Net_RegistrationResponse() { Success = true, Message = "Successfully registered!" });
+    }
+
+    [Obsolete]
+    private void OnLoginAccount(int connId, int hostId, Net_LoginAccount msg)
+    {
+        // Check that the user does exist in our db... (for now list)
+        UserOperations uo = new UserOperations(Users);
+
+        try
+        {
+            if (uo.CredenetialsCorrect(msg.LoginAccount.Username, msg.LoginAccount.Password))
+            {
+                var user = uo.GetUser(msg.LoginAccount.Username);
+                ConnectionUsers[connId].user = user;
+
+                Debug.Log(string.Format("Logged {0} in sucessfully", msg.LoginAccount.Username));
+                SendClient(hostId, connId, new Net_LoginResponse() { Success = true, Message = "Sucessfully logged in!" });
+            }
+            else
+            {
+                Debug.LogWarning("Incorrect password");
+                SendClient(hostId, connId, new Net_LoginResponse() { Success = false, Message = "Incorrect username or password!" });
+            }
+        }
+        catch(Exception)
+        {
+            Debug.LogWarning("User does not exist!");
+            SendClient(hostId, connId, new Net_LoginResponse() { Success = false, Message = "Incorrect username or password!" });
+        }
+
     }
 
  
@@ -222,6 +273,10 @@ public class Server : MonoBehaviour
                 break;
 
             case NetOP.RegistrationResponse:
+                channelId = connectionChannels["ReliableChannel"].ChannelId;
+                break;
+
+            case NetOP.LoginResponse:
                 channelId = connectionChannels["ReliableChannel"].ChannelId;
                 break;
 

@@ -5,11 +5,13 @@ namespace Assets.Scripts.Shared
     {
         None = 0,
         CreateAccount = 1,
-        ConnectToServer = 2,
-        LoadData = 3,
+        LoginAccount = 2,
+        ConnectToServer = 3,
+        LoadData = 4,
         MessageLobby = 6,
         MessageIngame = 10,
-        RegistrationResponse = 100
+        RegistrationResponse = 100,
+        LoginResponse = 101
 
     }
 
