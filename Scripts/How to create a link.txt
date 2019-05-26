@@ -1,0 +1,2 @@
+mklink /D "F:\Unity Games\GS_Server\Assets\Scripts\Shared" "F:/Unity Games\GenesisClient\Assets\Version Control\Scripts\Shared"
+Links Client to Server so deletre shared folder in server..
