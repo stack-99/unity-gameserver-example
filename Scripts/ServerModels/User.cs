@@ -14,8 +14,11 @@ namespace Assets.Scripts.ServerModels
         public string Email { get; set; }
         public string Password { get; set; }
 
+        public string Discriminator { get; set; }
         public DateTime DateJoined { get; set; }
         public bool IsBanned { get; set; }
+
+        public bool IsAdmin { get; set; }
 
         public ePlayerState CurrentState { get; set; }
     }

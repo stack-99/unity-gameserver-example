@@ -20,11 +20,11 @@ namespace Assets.Scripts.Shared
             return Users[username];
         }
 
-        public bool CredenetialsCorrect(string username, string password)
+        public bool CredentialsCorrect(string usernameOrEmail, string password)
         {
-            if(DoesUserExist(username))
+            if(DoesUserExist(usernameOrEmail))
             {
-                var user = GetUser(username);
+                var user = GetUser(usernameOrEmail);
 
                 if(user.Password == password)
                 {
@@ -38,6 +38,11 @@ namespace Assets.Scripts.Shared
         }
 
         
+        public bool DoesEmailExist(string email)
+        {
+            return false;
+        }
+
         public bool DoesUserExist(string username)
         {
             if (Users.ContainsKey(username))
