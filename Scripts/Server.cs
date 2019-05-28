@@ -10,6 +10,8 @@ using Assets.Scripts.ServerModels;
 using Shared;
 using System;
 using Assets.Version_Control.Scripts.Shared.Networking;
+using Assets.Scripts.Shared.Networking;
+using Assets.Version_Control.Scripts.Shared;
 
 public class Server : MonoBehaviour
 {
@@ -227,6 +229,22 @@ public class Server : MonoBehaviour
                 Debug.Log(string.Format("Logged {0} in sucessfully", msg.LoginAccount.UsernameOrEmail));
                 SendClient(hostId, connId, new Net_LoginResponse() { Status = eConnectionStatus.Successful, Username = user.Username
                 , Discriminator = user.Discriminator});
+
+                // well it wouldnt be like this he would need to choose a channel.../server w.e
+
+                List<ClientUser> clientUsers = new List<ClientUser>();
+                foreach(var connUsers in ConnectionUsers)
+                {
+                    clientUsers.Add(new ClientUser()
+                    {
+                        Username = connUsers.Value.user.Username,
+                        Discriminator = connUsers.Value.user.Discriminator,
+                        ConnectionId = connUsers.Key,
+                        Status = connUsers.Value.user.CurrentState
+                    });
+                }
+
+                SendClient(hostId, connId, new Net_UpdateClientUsersLobbyResponse() { ClientUsers = clientUsers });
             }
             else
             {
