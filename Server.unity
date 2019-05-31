@@ -304,8 +304,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1099300507}
   - component: {fileID: 1099300506}
+  - component: {fileID: 1099300508}
   m_Layer: 0
-  m_Name: Server
+  m_Name: GameServerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -320,9 +321,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1099300505}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 080ac4529fe5a5f48933aa80fd742594, type: 3}
+  m_Script: {fileID: 11500000, guid: 09ed07abb7e78b442a414d2ba5ae102d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _persistent: 1
+  ServerReference: {fileID: 0}
+  NetworkServerObjects: []
 --- !u!4 &1099300507
 Transform:
   m_ObjectHideFlags: 0
@@ -337,3 +341,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1099300508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099300505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4adc319de44073349ab168522e64c4fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  configuration: {fileID: 4900000, guid: cdbcf5e43d271b4448d2bcd2295d36aa, type: 3}
+  createOnEnable: 1
+  eventsFromDispatcher: 1

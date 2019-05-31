@@ -240,7 +240,7 @@ public class Server : MonoBehaviour
                         Username = connUsers.Value.user.Username,
                         Discriminator = connUsers.Value.user.Discriminator,
                         ConnectionId = connUsers.Key,
-                        Status = connUsers.Value.user.CurrentState
+                        CurrentState = connUsers.Value.user.CurrentState
                     });
                 }
 
